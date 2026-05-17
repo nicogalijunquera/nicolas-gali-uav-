@@ -1,0 +1,936 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#002147">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<title>Nicolas Gali | Aerospace Engineer</title>
+<meta name="description" content="Nicolas Gali — MEng Mechanical & Aerospace Engineering, Brunel University of London. High aspect ratio UAV wing optimisation: +27.51% aerodynamic efficiency using CFD, ANSYS Fluent, and MATLAB.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+/* ── RESET ── */
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth;-webkit-text-size-adjust:100%}
+body{
+  font-family:'Inter',system-ui,sans-serif;
+  color:#111827;background:#F5F7FA;
+  line-height:1.65;font-size:16px;
+  -webkit-font-smoothing:antialiased;
+  padding-bottom:calc(64px + env(safe-area-inset-bottom));
+}
+img{max-width:100%;height:auto;display:block}
+
+/* ── BRUNEL TOKENS ── */
+:root{
+  --navy:#002147;
+  --navy2:#003066;
+  --red:#C8102E;
+  --red2:#A00D25;
+  --red-light:#FDECEA;
+  --white:#FFFFFF;
+  --light:#F5F7FA;
+  --card:#FFFFFF;
+  --border:#DDE3EC;
+  --muted:#596880;
+  --text:#111827;
+  --r:12px;
+  --sh:0 2px 12px rgba(0,33,71,0.10);
+  --sh2:0 1px 6px rgba(0,33,71,0.07);
+}
+
+/* ── HERO ── */
+.hero{
+  background:linear-gradient(160deg,#001020 0%,var(--navy) 50%,var(--navy2) 100%);
+  color:var(--white);
+  padding:52px 20px 36px;
+  position:relative;overflow:hidden;
+}
+.hero::after{
+  content:'';position:absolute;bottom:0;left:0;right:0;
+  height:3px;background:var(--red);
+}
+.hero-inner{max-width:480px;margin:0 auto;text-align:center}
+.hero-badge{
+  display:inline-flex;align-items:center;gap:6px;
+  background:rgba(200,16,46,0.18);border:1px solid rgba(200,16,46,0.4);
+  border-radius:30px;padding:5px 14px;
+  font-size:0.72rem;font-weight:700;letter-spacing:0.06em;
+  text-transform:uppercase;color:#fca5a5;margin-bottom:18px;
+}
+.hero h1{
+  font-size:1.75rem;font-weight:900;line-height:1.2;
+  letter-spacing:-0.02em;margin-bottom:6px;
+}
+.hero-role{
+  font-size:0.88rem;color:#7A9BBD;font-weight:500;
+  margin-bottom:28px;line-height:1.5;
+}
+.hero-role strong{color:#c7d8ec}
+.kpis{
+  display:grid;grid-template-columns:repeat(3,1fr);gap:10px;
+  margin-bottom:22px;
+}
+.kpi{
+  background:rgba(255,255,255,0.07);
+  border:1px solid rgba(255,255,255,0.12);
+  border-radius:var(--r);padding:14px 8px;text-align:center;
+}
+.kpi-val{font-size:1.6rem;font-weight:900;color:var(--white);line-height:1}
+.kpi-val.red{color:#fca5a5}
+.kpi-lbl{font-size:0.65rem;color:#7A9BBD;margin-top:4px;font-weight:500;line-height:1.3}
+.hero-sub{font-size:0.82rem;color:#4d6a85}
+
+/* ── TAB BAR ── */
+.tabbar{
+  position:fixed;bottom:0;left:0;right:0;z-index:300;
+  background:var(--navy);
+  display:flex;align-items:stretch;
+  height:calc(64px + env(safe-area-inset-bottom));
+  padding-bottom:env(safe-area-inset-bottom);
+  box-shadow:0 -2px 16px rgba(0,0,0,0.3);
+  border-top:1px solid rgba(255,255,255,0.08);
+}
+.tab{
+  flex:1;display:flex;flex-direction:column;
+  align-items:center;justify-content:center;gap:3px;
+  cursor:pointer;padding:8px 4px;
+  transition:background 0.15s;
+  -webkit-tap-highlight-color:transparent;
+  border:none;background:none;
+  min-height:44px;
+}
+.tab:active{background:rgba(255,255,255,0.07)}
+.tab-icon{font-size:1.25rem;line-height:1}
+.tab-label{
+  font-size:0.6rem;font-weight:600;letter-spacing:0.03em;
+  text-transform:uppercase;color:#5a7a9a;transition:color 0.15s;
+}
+.tab.active .tab-label{color:var(--white)}
+.tab-indicator{
+  width:20px;height:2px;border-radius:1px;
+  background:transparent;transition:background 0.15s;margin-top:1px;
+}
+.tab.active .tab-indicator{background:var(--red)}
+
+/* ── PANELS ── */
+.panel{display:none;animation:fadeIn 0.18s ease}
+.panel.active{display:block}
+@keyframes fadeIn{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:translateY(0)}}
+
+/* ── LAYOUT ── */
+.wrap{max-width:540px;margin:0 auto;padding:20px 16px}
+.sec-label{
+  font-size:0.65rem;font-weight:800;letter-spacing:0.12em;
+  text-transform:uppercase;color:var(--red);margin-bottom:6px;
+}
+.sec-title{
+  font-size:1.2rem;font-weight:800;color:var(--navy);
+  letter-spacing:-0.01em;line-height:1.3;margin-bottom:10px;
+}
+.divider{width:36px;height:3px;background:var(--red);border-radius:2px;margin-bottom:18px}
+.body-text{font-size:0.92rem;color:var(--muted);line-height:1.75;margin-bottom:14px}
+
+/* ── CARDS ── */
+.card{
+  background:var(--card);border:1px solid var(--border);
+  border-radius:var(--r);padding:18px;
+  box-shadow:var(--sh2);margin-bottom:12px;
+}
+.card h3{font-size:0.9rem;font-weight:700;color:var(--navy);margin-bottom:10px}
+
+/* ── PLAIN BOX ── */
+.plain-box{
+  background:var(--card);border-left:3px solid var(--red);
+  border-radius:0 var(--r) var(--r) 0;
+  padding:14px 16px;margin-bottom:14px;
+  border:1px solid var(--border);border-left-width:3px;border-left-color:var(--red);
+  box-shadow:var(--sh2);
+}
+.plain-box .plain-label{
+  font-size:0.63rem;font-weight:800;letter-spacing:0.1em;
+  text-transform:uppercase;color:var(--red);margin-bottom:5px;
+}
+.plain-box p{font-size:0.88rem;color:var(--text);line-height:1.7}
+
+/* ── STEP FLOW (vertical) ── */
+.step-flow{display:flex;flex-direction:column;gap:0;margin-bottom:14px}
+.step-v{
+  background:var(--card);border:1px solid var(--border);
+  border-radius:var(--r);padding:14px 16px;
+  display:flex;align-items:center;gap:14px;
+  margin-bottom:6px;box-shadow:var(--sh2);
+}
+.step-v.final{background:var(--navy)}
+.step-v-num{
+  font-size:0.62rem;font-weight:800;letter-spacing:0.08em;
+  text-transform:uppercase;color:var(--muted);min-width:52px;
+}
+.step-v.final .step-v-num{color:#4d6a85}
+.step-v-body{flex:1}
+.step-v-name{font-size:0.88rem;font-weight:700;color:var(--navy);line-height:1.2}
+.step-v.final .step-v-name{color:#c7d8ec}
+.step-v-sub{font-size:0.75rem;color:var(--muted);margin-top:2px}
+.step-v.final .step-v-sub{color:#4d6a85}
+.step-v-val{font-size:1.4rem;font-weight:900;color:var(--red);line-height:1;flex-shrink:0}
+.step-v.final .step-v-val{color:#fca5a5;font-size:1.6rem}
+
+/* ── TABLE ── */
+.tbl-wrap{overflow-x:auto;border-radius:var(--r);border:1px solid var(--border);box-shadow:var(--sh2);margin-bottom:14px}
+table{width:100%;border-collapse:collapse;font-size:0.8rem}
+th{background:var(--navy);color:#fff;padding:9px 10px;text-align:left;font-weight:600;font-size:0.75rem;letter-spacing:0.02em;white-space:nowrap}
+td{padding:7px 10px;border-bottom:1px solid var(--border);white-space:nowrap}
+tr:last-child td{border-bottom:none}
+tr:nth-child(even) td{background:#f5f7fa}
+tr.hl td{background:var(--red-light);font-weight:700;color:var(--navy);border-top:2px solid var(--red)}
+
+/* ── TAGS / CHIPS ── */
+.chip-group{margin-bottom:20px}
+.chip-group-label{
+  font-size:0.65rem;font-weight:800;letter-spacing:0.1em;
+  text-transform:uppercase;color:var(--muted);margin-bottom:8px;
+}
+.chips{display:flex;flex-wrap:wrap;gap:7px}
+.chip{
+  font-size:0.78rem;font-weight:600;
+  padding:5px 13px;border-radius:30px;
+  border:1px solid transparent;
+}
+.chip-nv{background:#EBF0F8;color:var(--navy);border-color:#C8D8EA}
+.chip-rd{background:var(--red-light);color:var(--red2);border-color:#F5C0C8}
+.chip-gn{background:#dcfce7;color:#166534;border-color:#bbf7d0}
+.chip-or{background:#fef3c7;color:#92400e;border-color:#fde68a}
+.chip-pu{background:#ede9fe;color:#4c1d95;border-color:#ddd6fe}
+
+/* ── ACCORDION ── */
+.acc{border:1px solid var(--border);border-radius:var(--r);overflow:hidden;margin-bottom:10px;box-shadow:var(--sh2)}
+.acc-h{
+  padding:14px 16px;cursor:pointer;background:var(--card);
+  display:flex;justify-content:space-between;align-items:center;
+  font-weight:700;font-size:0.88rem;color:var(--navy);
+  user-select:none;transition:background 0.15s;gap:10px;
+  min-height:44px;-webkit-tap-highlight-color:transparent;
+}
+.acc-h:active{background:#EBF0F8}
+.acc-h .ico{color:var(--muted);transition:transform 0.25s;flex-shrink:0;font-size:1rem}
+.acc-b{display:none;padding:16px;border-top:1px solid var(--border);background:#fafbfd}
+.acc-b.open{display:block}
+.ico.open{transform:rotate(180deg)}
+
+/* ── EQ ── */
+.eq{
+  background:var(--navy);color:#93c5fd;
+  font-family:'Consolas','Courier New',monospace;
+  padding:12px 14px;border-radius:8px;
+  font-size:0.82rem;line-height:1.9;
+  border-left:3px solid var(--red);
+  overflow-x:auto;margin:10px 0;
+}
+
+/* ── CALLOUT ── */
+.callout{
+  background:#EBF0F8;border-left:3px solid var(--navy);
+  border-radius:0 8px 8px 0;padding:10px 14px;
+  font-size:0.85rem;margin:10px 0;line-height:1.65;
+  color:var(--text);
+}
+.callout.red{background:var(--red-light);border-color:var(--red)}
+
+/* ── FIGURE ── */
+.fig{margin:10px 0}
+.fig img{
+  width:100%;border-radius:var(--r);
+  border:1px solid var(--border);box-shadow:var(--sh2);
+  background:#f8fafc;object-fit:contain;
+}
+.fig figcaption{
+  font-size:0.75rem;color:var(--muted);margin-top:7px;
+  font-style:italic;line-height:1.5;text-align:center;
+}
+.fig-pair{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:10px 0}
+
+/* ── UL ── */
+ul.bl{padding-left:18px}
+ul.bl li{margin-bottom:6px;font-size:0.88rem;line-height:1.65}
+ul.bl li::marker{color:var(--red)}
+
+/* ── BANNER ── */
+.banner{
+  background:linear-gradient(120deg,var(--navy) 0%,var(--navy2) 100%);
+  border-radius:var(--r);padding:20px;margin-bottom:14px;
+  box-shadow:var(--sh);border-left:4px solid var(--red);
+}
+.banner-num{font-size:2.8rem;font-weight:900;color:var(--white);line-height:1;margin-bottom:6px}
+.banner-text h3{font-size:0.92rem;color:var(--white);font-weight:700;margin-bottom:4px}
+.banner-text p{font-size:0.80rem;color:#7A9BBD;line-height:1.6}
+
+/* ── CONTACT BUTTON ── */
+.cta-btn{
+  display:block;text-align:center;
+  background:var(--red);color:var(--white);
+  font-weight:700;font-size:0.95rem;
+  padding:15px 24px;border-radius:var(--r);
+  text-decoration:none;margin-bottom:12px;
+  box-shadow:0 4px 14px rgba(200,16,46,0.3);
+  -webkit-tap-highlight-color:transparent;
+  transition:background 0.15s;
+}
+.cta-btn:hover{background:var(--red2);text-decoration:none;color:var(--white)}
+.cta-btn.outline{
+  background:transparent;color:var(--navy);
+  border:2px solid var(--navy);box-shadow:none;
+}
+
+/* ── INLINE STAT ── */
+.inline-stat{
+  display:inline-flex;align-items:center;gap:6px;
+  background:#EBF0F8;border:1px solid #C8D8EA;
+  border-radius:6px;padding:4px 10px;font-size:0.82rem;
+  font-weight:600;color:var(--navy);margin:3px 3px 3px 0;
+}
+
+/* ── REFS ── */
+.refs{list-style:none}
+.refs li{
+  padding:8px 0;border-bottom:1px solid var(--border);
+  font-size:0.82rem;color:var(--muted);display:flex;gap:10px;
+}
+.refs li:last-child{border-bottom:none}
+.ref-n{font-weight:800;color:var(--navy);min-width:26px;flex-shrink:0}
+
+/* ── FOOTER ── */
+.foot{
+  background:var(--navy);color:#4d6a85;
+  padding:24px 20px;text-align:center;
+  font-size:0.78rem;line-height:1.7;
+}
+.foot p{margin-bottom:6px}
+.foot-copy{color:#2d4a65;font-size:0.72rem;margin-top:12px}
+
+/* ── DESKTOP OVERRIDE ── */
+@media(min-width:640px){
+  .hero{padding:64px 24px 48px}
+  .hero h1{font-size:2.2rem}
+  .kpi-val{font-size:2rem}
+  .tabbar{
+    position:fixed;top:0;bottom:auto;
+    height:56px;padding-bottom:0;
+    border-top:none;border-bottom:1px solid rgba(255,255,255,0.1);
+  }
+  body{padding-bottom:0;padding-top:56px}
+  .hero{padding-top:36px}
+  .tab-icon{display:none}
+  .tab-label{font-size:0.75rem;letter-spacing:0.04em}
+  .tab-indicator{margin-top:0;width:100%;height:3px;border-radius:0;position:absolute;bottom:0}
+  .tab{position:relative;padding:0 16px;flex-direction:row;gap:6px;font-weight:600}
+  .tab.active .tab-label{color:var(--white)}
+  .wrap{padding:24px 20px}
+}
+</style>
+</head>
+<body>
+
+<!-- ══════════ HERO ══════════ -->
+<div class="hero">
+  <div class="hero-inner">
+    <div class="hero-badge">MEng Dissertation · 2026</div>
+    <h1>Nicolas Gali</h1>
+    <div class="hero-role">
+      <strong>Mechanical &amp; Aerospace Engineering</strong><br>
+      Brunel University of London
+    </div>
+    <div class="kpis">
+      <div class="kpi"><div class="kpi-val red">+27.51%</div><div class="kpi-lbl">L/D improvement</div></div>
+      <div class="kpi"><div class="kpi-val">21.66</div><div class="kpi-lbl">Final L/D ratio</div></div>
+      <div class="kpi"><div class="kpi-val">AR 10</div><div class="kpi-lbl">Optimised wing</div></div>
+    </div>
+    <div class="hero-sub">High Aspect Ratio UAV Wing · CFD · ANSYS Fluent · MATLAB</div>
+  </div>
+</div>
+
+<!-- ══════════ TAB BAR ══════════ -->
+<nav class="tabbar">
+  <button class="tab active" onclick="showTab('overview',this)">
+    <span class="tab-icon">&#9654;</span>
+    <span class="tab-label">Overview</span>
+    <span class="tab-indicator"></span>
+  </button>
+  <button class="tab" onclick="showTab('method',this)">
+    <span class="tab-icon">&#9881;</span>
+    <span class="tab-label">Method</span>
+    <span class="tab-indicator"></span>
+  </button>
+  <button class="tab" onclick="showTab('results',this)">
+    <span class="tab-icon">&#9660;</span>
+    <span class="tab-label">Results</span>
+    <span class="tab-indicator"></span>
+  </button>
+  <button class="tab" onclick="showTab('skills',this)">
+    <span class="tab-icon">&#10022;</span>
+    <span class="tab-label">Skills</span>
+    <span class="tab-indicator"></span>
+  </button>
+  <button class="tab" onclick="showTab('about',this)">
+    <span class="tab-icon">&#9998;</span>
+    <span class="tab-label">About</span>
+    <span class="tab-indicator"></span>
+  </button>
+</nav>
+
+<!-- ══════════ PANELS ══════════ -->
+
+<!-- OVERVIEW -->
+<div id="panel-overview" class="panel active">
+  <div class="wrap">
+    <div class="sec-label">Project Overview</div>
+    <h2 class="sec-title">Why Longer Wings Make Better Drones</h2>
+    <div class="divider"></div>
+
+    <div class="plain-box">
+      <div class="plain-label">In plain terms</div>
+      <p>Think of an albatross versus a sparrow — the long, narrow wings of the albatross waste almost no energy in flight. The same principle applies to drone wings. This project quantifies exactly how much efficiency is gained by increasing the wing's aspect ratio, and confirms the structure can still handle competition loads.</p>
+    </div>
+
+    <figure class="fig">
+      <img src="Figures/simple%20AR.png" alt="Aspect ratio comparison — short vs long wing" loading="lazy">
+      <figcaption>Aspect ratio (AR = wingspan ÷ chord). Higher AR → lower induced drag → longer range and endurance. [Leishman, 2026]</figcaption>
+    </figure>
+
+    <div class="banner">
+      <div class="banner-num">+27.51%</div>
+      <div class="banner-text">
+        <h3>Three-step optimisation over the BrUAS 2022 baseline</h3>
+        <p>AR increase &nbsp;+19.99% &nbsp;·&nbsp; Aerofoil shape &nbsp;+2.38% &nbsp;·&nbsp; Winglets &nbsp;+4.05%</p>
+        <p style="margin-top:4px;">Final: b = 3180 mm · c = 317 mm · L/D = 21.66</p>
+      </div>
+    </div>
+
+    <div class="step-flow">
+      <div class="step-v">
+        <div class="step-v-num">Baseline</div>
+        <div class="step-v-body"><div class="step-v-name">BrUAS 2022</div><div class="step-v-sub">AR = 6.3</div></div>
+        <div class="step-v-val">16.99</div>
+      </div>
+      <div class="step-v">
+        <div class="step-v-num">Step 1</div>
+        <div class="step-v-body"><div class="step-v-name">Wider Wing</div><div class="step-v-sub">AR 6.3 → 10</div></div>
+        <div class="step-v-val">+19.99%</div>
+      </div>
+      <div class="step-v">
+        <div class="step-v-num">Step 2</div>
+        <div class="step-v-body"><div class="step-v-name">Aerofoil Optimised</div><div class="step-v-sub">Adjoint method</div></div>
+        <div class="step-v-val">+2.38%</div>
+      </div>
+      <div class="step-v">
+        <div class="step-v-num">Step 3</div>
+        <div class="step-v-body"><div class="step-v-name">Winglets Added</div><div class="step-v-sub">Modular plug-in</div></div>
+        <div class="step-v-val">+4.05%</div>
+      </div>
+      <div class="step-v final">
+        <div class="step-v-num">Final</div>
+        <div class="step-v-body"><div class="step-v-name">Total Gain</div><div class="step-v-sub">L/D = 21.66</div></div>
+        <div class="step-v-val">+27.51%</div>
+      </div>
+    </div>
+
+    <div class="acc">
+      <div class="acc-h" onclick="tog(this)">
+        <span>Project Context &amp; Motivation</span>
+        <span class="ico">▾</span>
+      </div>
+      <div class="acc-b">
+        <p class="body-text">The Brunel UAS Society's 2022 competition wing (AR = 6.3, NACA 4415) is the starting baseline. The IMechE UAS Challenge 2026 rewards efficiency, endurance and technical depth — all areas where a higher aspect ratio configuration offers a quantifiable scoring advantage.</p>
+        <div class="callout red"><strong>Research objective:</strong> Quantify the L/D gain from increasing AR on a fixed-area wing (S ≈ 1.0 m²), and confirm structural viability under 3.5 G competition loads.</div>
+        <div class="card" style="margin-top:12px">
+          <h3>BrUAS 2022 Baseline</h3>
+          <div class="tbl-wrap">
+            <table>
+              <tr><th>Parameter</th><th>Value</th></tr>
+              <tr><td>Aerofoil</td><td>NACA 4415</td></tr>
+              <tr><td>Wingspan <em>b</em></td><td>2520 mm</td></tr>
+              <tr><td>Chord <em>c</em></td><td>399.9 mm</td></tr>
+              <tr><td>Aspect ratio</td><td>6.3</td></tr>
+              <tr><td>Wing area</td><td>≈ 1.0 m²</td></tr>
+              <tr><td>Cruise speed</td><td>31.5 m/s</td></tr>
+              <tr><td>Load limit</td><td>3.5 G</td></tr>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="acc">
+      <div class="acc-h" onclick="tog(this)">
+        <span>The Physics — Aspect Ratio &amp; Induced Drag</span>
+        <span class="ico">▾</span>
+      </div>
+      <div class="acc-b">
+        <p class="body-text">Induced drag scales inversely with aspect ratio — doubling AR roughly halves the induced drag term. This is the fundamental aerodynamic motivation for the project.</p>
+        <div class="eq">C_D = C_d + C_L² / (π · e · AR)
+M_root ∝ √AR → +26% at AR = 10</div>
+        <figure class="fig">
+          <img src="Figures/Matlab/AR_LD_Mroot_with_percent.png" alt="AR trade-off chart" loading="lazy">
+          <figcaption>L/D improvement (blue) and root bending moment (red) vs AR. AR = 10 sits at the aerodynamic sweet spot before structural penalties dominate.</figcaption>
+        </figure>
+      </div>
+    </div>
+
+    <div class="acc">
+      <div class="acc-h" onclick="tog(this)">
+        <span>Final Wing Design</span>
+        <span class="ico">▾</span>
+      </div>
+      <div class="acc-b">
+        <figure class="fig">
+          <img src="Figures/tipConcept6.png" alt="Final AR=10 wing with winglet" loading="lazy">
+          <figcaption>Final wing with modular winglet — AR = 10, span 3180 mm, chord 317 mm.</figcaption>
+        </figure>
+        <figure class="fig">
+          <img src="Figures/2Pressure3Dcontour.png" alt="Pressure distribution — final wing" loading="lazy">
+          <figcaption>Upper surface pressure distribution at cruise (α = 1°). Strong suction at the leading edge with spanwise gradient consistent with the elliptic load assumption used in structural sizing.</figcaption>
+        </figure>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- METHOD -->
+<div id="panel-method" class="panel">
+  <div class="wrap">
+    <div class="sec-label">Methodology</div>
+    <h2 class="sec-title">How the Study Was Conducted</h2>
+    <div class="divider"></div>
+
+    <div class="plain-box">
+      <div class="plain-label">The approach</div>
+      <p>Three methods combined: virtual wind tunnel simulations (CFD) to predict aerodynamic performance, adjoint-based shape optimisation to refine the aerofoil profile, and analytical beam theory to verify structural integrity — all validated before conclusions were drawn.</p>
+    </div>
+
+    <!-- CFD -->
+    <div class="acc">
+      <div class="acc-h" onclick="tog(this)">
+        <span>CFD Setup — ANSYS Fluent</span>
+        <span class="ico">▾</span>
+      </div>
+      <div class="acc-b">
+        <p class="body-text">RANS simulations with SST k-ω turbulence model. Both 2D (aerofoil) and 3D (full wing) domains simulated. Wall-resolved meshes with y⁺ ≈ 1 — no wall functions.</p>
+        <div class="card">
+          <h3>Key Settings</h3>
+          <div class="tbl-wrap">
+            <table>
+              <tr><th>Parameter</th><th>Value</th></tr>
+              <tr><td>Solver</td><td>ANSYS Fluent · RANS</td></tr>
+              <tr><td>Turbulence</td><td>SST k-ω · y⁺ ≈ 1</td></tr>
+              <tr><td>Speed · Re</td><td>31.5 m/s · 8.6×10⁵</td></tr>
+              <tr><td>Convergence</td><td>&lt;1% in C<sub>L</sub> and C<sub>D</sub></td></tr>
+            </table>
+          </div>
+        </div>
+        <div class="fig-pair">
+          <figure class="fig">
+            <img src="Figures/2D_mesh.png" alt="2D mesh" loading="lazy">
+            <figcaption>2D structured mesh</figcaption>
+          </figure>
+          <figure class="fig">
+            <img src="Figures/mesh1.png" alt="3D mesh" loading="lazy">
+            <figcaption>3D half-wing mesh</figcaption>
+          </figure>
+        </div>
+        <div class="acc" style="margin-top:6px">
+          <div class="acc-h" onclick="tog(this)" style="font-size:0.82rem;font-weight:600">Mesh independence &amp; convergence ▾</div>
+          <div class="acc-b">
+            <figure class="fig">
+              <img src="Figures/Matlab/mesh_independence_3D_v2.png" alt="Mesh independence" loading="lazy">
+              <figcaption>3D mesh independence — plateau confirms solution is mesh-independent.</figcaption>
+            </figure>
+            <figure class="fig">
+              <img src="Figures/residuals_plot.png" alt="Residuals" loading="lazy">
+              <figcaption>Solver residuals converging below 10⁻⁴.</figcaption>
+            </figure>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- AEROFOIL OPT -->
+    <div class="acc">
+      <div class="acc-h" onclick="tog(this)">
+        <span>Aerofoil Optimisation — Adjoint Method</span>
+        <span class="ico">▾</span>
+      </div>
+      <div class="acc-b">
+        <p class="body-text">The adjoint method (ANSYS Fluent, [9]) computes drag sensitivity across every surface point simultaneously using just two CFD solves — far more efficient than finite-difference approaches for large numbers of design variables.</p>
+        <ul class="bl">
+          <li>Starting profile: NACA 4415</li>
+          <li>Objective: minimise drag, maintain lift</li>
+          <li>Primary change at lower trailing edge — reduces adverse pressure gradient</li>
+          <li>2D optimisation applied to 3D wing</li>
+          <li>Gain: <strong>+2.38% L/D</strong></li>
+        </ul>
+        <div class="fig-pair">
+          <figure class="fig">
+            <img src="Figures/2dmorphing0.png" alt="Baseline NACA 4415" loading="lazy">
+            <figcaption>Stage 0 — Baseline</figcaption>
+          </figure>
+          <figure class="fig">
+            <img src="Figures/AoA22optimised.png" alt="Final optimised profile" loading="lazy">
+            <figcaption>Stage 4 — Optimised</figcaption>
+          </figure>
+        </div>
+        <figure class="fig">
+          <img src="Figures/Matlab/Cp_distribution.png" alt="Cp distribution" loading="lazy">
+          <figcaption>C<sub>p</sub> distribution — baseline vs optimised. Reduced suction on lower surface near trailing edge confirms the geometric modification mechanism.</figcaption>
+        </figure>
+      </div>
+    </div>
+
+    <!-- WINGLET -->
+    <div class="acc">
+      <div class="acc-h" onclick="tog(this)">
+        <span>Winglet Design — Modular Plug-in</span>
+        <span class="ico">▾</span>
+      </div>
+      <div class="acc-b">
+        <p class="body-text">Winglets disrupt the wingtip vortex — a direct energy loss — and recover it as useful lift-to-drag improvement. Designed as a modular plug-in to the wingtip rib for competition transport practicality.</p>
+        <ul class="bl">
+          <li>Gain: <strong>+4.05% L/D</strong></li>
+          <li>AR<sub>eff</sub> = 10.34 (CFD equivalence) — preferred over geometric estimate of 10.75</li>
+          <li>Removable without structural modification to main wing</li>
+        </ul>
+        <div class="fig-pair">
+          <figure class="fig">
+            <img src="Figures/wingtipvortex.png" alt="Vortex — no winglet" loading="lazy">
+            <figcaption>Without winglet</figcaption>
+          </figure>
+          <figure class="fig">
+            <img src="Figures/wingtipvortex2.png" alt="Vortex — with winglet" loading="lazy">
+            <figcaption>With winglet</figcaption>
+          </figure>
+        </div>
+        <p class="body-text" style="margin-top:6px;">The winglet visibly weakens the tip vortex, recovering energy that would otherwise be permanently lost to the wake.</p>
+      </div>
+    </div>
+
+    <!-- STRUCTURAL -->
+    <div class="acc">
+      <div class="acc-h" onclick="tog(this)">
+        <span>Structural Analysis — Rib Sizing</span>
+        <span class="ico">▾</span>
+      </div>
+      <div class="acc-b">
+        <p class="body-text">AR increase from 6.3 to 10 raises the root bending moment by +26% (√AR scaling, Megson [8]). Analytical beam theory used to size ribs under 3.5 G loading with an elliptic lift distribution.</p>
+        <div class="eq">q(y) = q₀ × √(1 − (2y/b)²)
+V(0) = 67.5 N  (root shear force)</div>
+        <div class="card">
+          <h3>Rib Layout — b/2 = 1590 mm</h3>
+          <div class="tbl-wrap">
+            <table>
+              <tr><th>Zone</th><th>Spacing</th><th>Material</th></tr>
+              <tr><td>Zone I (root)</td><td>80 mm</td><td>Balsa</td></tr>
+              <tr><td>Zone II (mid)</td><td>100 mm</td><td>Balsa</td></tr>
+              <tr><td>Zone III (tip)</td><td>130 mm</td><td>Balsa</td></tr>
+              <tr class="hl"><td>Ribs 1 &amp; 13</td><td>Critical</td><td>Plywood</td></tr>
+            </table>
+          </div>
+        </div>
+        <div class="fig-pair">
+          <figure class="fig">
+            <img src="Figures/rib_schematic.png" alt="Rib schematic" loading="lazy">
+            <figcaption>Rib layout schematic</figcaption>
+          </figure>
+          <figure class="fig">
+            <img src="Figures/interiorWING2.png" alt="Wing interior" loading="lazy">
+            <figcaption>Interior structural arrangement</figcaption>
+          </figure>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- RESULTS -->
+<div id="panel-results" class="panel">
+  <div class="wrap">
+    <div class="sec-label">Results</div>
+    <h2 class="sec-title">Performance Across All Five Configurations</h2>
+    <div class="divider"></div>
+
+    <div class="plain-box">
+      <div class="plain-label">The outcome</div>
+      <p>Five wing designs tested in full 3D CFD, each isolating one change. The final configuration (Model 5) achieves an L/D of 21.66 versus 16.99 for the baseline — a substantial gain through three additive, well-characterised optimisation steps.</p>
+    </div>
+
+    <div class="step-flow">
+      <div class="step-v">
+        <div class="step-v-num">M1</div>
+        <div class="step-v-body"><div class="step-v-name">BrUAS 2022</div><div class="step-v-sub">AR = 6.3</div></div>
+        <div class="step-v-val" style="font-size:1.1rem;color:var(--muted)">16.99</div>
+      </div>
+      <div class="step-v">
+        <div class="step-v-num">M2</div>
+        <div class="step-v-body"><div class="step-v-name">AR = 10</div><div class="step-v-sub">Dominant driver</div></div>
+        <div class="step-v-val">+19.99%</div>
+      </div>
+      <div class="step-v">
+        <div class="step-v-num">M4</div>
+        <div class="step-v-body"><div class="step-v-name">+ Aerofoil Opt.</div><div class="step-v-sub">Adjoint · 2D→3D</div></div>
+        <div class="step-v-val">+2.38%</div>
+      </div>
+      <div class="step-v">
+        <div class="step-v-num">M5</div>
+        <div class="step-v-body"><div class="step-v-name">+ Winglet</div><div class="step-v-sub">AR<sub>eff</sub> = 10.34</div></div>
+        <div class="step-v-val">+4.05%</div>
+      </div>
+      <div class="step-v final">
+        <div class="step-v-num">Total</div>
+        <div class="step-v-body"><div class="step-v-name">Final L/D</div><div class="step-v-sub">L/D = 21.66</div></div>
+        <div class="step-v-val">+27.51%</div>
+      </div>
+    </div>
+
+    <div class="acc">
+      <div class="acc-h" onclick="tog(this)">
+        <span>Full 3D CFD Results Table</span>
+        <span class="ico">▾</span>
+      </div>
+      <div class="acc-b">
+        <p class="body-text" style="font-size:0.82rem">All at V = 31.5 m/s, α = 1°, Re = 8.6×10⁵. Half-wing values (symmetry BC).</p>
+        <div class="tbl-wrap">
+          <table>
+            <tr><th>M</th><th>Configuration</th><th>L/D</th><th>Δ (%)</th></tr>
+            <tr><td>1</td><td>BrUAS 2022 Baseline</td><td>16.99</td><td>—</td></tr>
+            <tr><td>2</td><td>AR = 10</td><td>20.39</td><td>+19.99</td></tr>
+            <tr><td>3</td><td>AR = 10 + Winglet only</td><td>21.07</td><td>+24.04</td></tr>
+            <tr><td>4</td><td>AR = 10 + Opt. Aerofoil</td><td>20.79</td><td>+22.37</td></tr>
+            <tr class="hl"><td>5</td><td>AR 10 + Aerofoil + Winglet</td><td>21.66</td><td>+27.51</td></tr>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <div class="acc">
+      <div class="acc-h" onclick="tog(this)">
+        <span>Performance Charts</span>
+        <span class="ico">▾</span>
+      </div>
+      <div class="acc-b">
+        <figure class="fig">
+          <img src="Figures/Matlab/weighted_efficiency.png" alt="Weighted efficiency" loading="lazy">
+          <figcaption>Weighted efficiency — L/D improvement per unit AR increase across all five models.</figcaption>
+        </figure>
+        <figure class="fig">
+          <img src="Figures/Matlab/Lift_vs_AoA.png" alt="Lift vs AoA" loading="lazy">
+          <figcaption>Lift vs AoA — Baseline (M1) vs Final (M5). Model 5 generates higher lift across the full operating range.</figcaption>
+        </figure>
+      </div>
+    </div>
+
+    <div class="acc">
+      <div class="acc-h" onclick="tog(this)">
+        <span>Conclusions &amp; Future Work</span>
+        <span class="ico">▾</span>
+      </div>
+      <div class="acc-b">
+        <ul class="bl" style="margin-bottom:12px">
+          <li>AR increase 6.3 → 10 is the dominant driver (+19.99%); aerofoil and winglet deliver additive gains.</li>
+          <li>Structural viability confirmed with targeted reinforcement at just 2 rib positions.</li>
+          <li>Modular winglet satisfies competition transport constraints.</li>
+          <li>AR<sub>eff</sub> = 10.34 (CFD) preferred over geometric estimate of 10.75.</li>
+        </ul>
+        <div class="callout red">
+          <strong>Future work:</strong> 3D adjoint optimisation (estimated 2–3× higher gain), wind tunnel validation, full FEA, and physical prototype + flight test.
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- SKILLS -->
+<div id="panel-skills" class="panel">
+  <div class="wrap">
+    <div class="sec-label">Technical Profile</div>
+    <h2 class="sec-title">Skills &amp; Tools</h2>
+    <div class="divider"></div>
+
+    <div class="chip-group">
+      <div class="chip-group-label">Simulation Software</div>
+      <div class="chips">
+        <span class="chip chip-nv">ANSYS Fluent</span>
+        <span class="chip chip-nv">ANSYS Meshing</span>
+        <span class="chip chip-nv">MATLAB</span>
+        <span class="chip chip-nv">SolidWorks</span>
+      </div>
+    </div>
+
+    <div class="chip-group">
+      <div class="chip-group-label">CFD &amp; Aerodynamics</div>
+      <div class="chips">
+        <span class="chip chip-rd">RANS CFD</span>
+        <span class="chip chip-rd">SST k-ω Turbulence</span>
+        <span class="chip chip-rd">Mesh Independence</span>
+        <span class="chip chip-rd">Adjoint Optimisation</span>
+        <span class="chip chip-rd">Boundary Layer Theory</span>
+        <span class="chip chip-rd">Pressure-Based Solver</span>
+      </div>
+    </div>
+
+    <div class="chip-group">
+      <div class="chip-group-label">Aerodynamics &amp; Design</div>
+      <div class="chips">
+        <span class="chip chip-gn">Induced Drag Theory</span>
+        <span class="chip chip-gn">Lift-to-Drag Optimisation</span>
+        <span class="chip chip-gn">Winglet Design</span>
+        <span class="chip chip-gn">Aerofoil Analysis</span>
+        <span class="chip chip-gn">Wing Geometry Design</span>
+      </div>
+    </div>
+
+    <div class="chip-group">
+      <div class="chip-group-label">Structural Analysis</div>
+      <div class="chips">
+        <span class="chip chip-or">Beam Theory</span>
+        <span class="chip chip-or">Elliptic Load Distribution</span>
+        <span class="chip chip-or">Rib &amp; Spar Sizing</span>
+        <span class="chip chip-or">Material Selection</span>
+      </div>
+    </div>
+
+    <div class="chip-group">
+      <div class="chip-group-label">Engineering Competencies</div>
+      <div class="chips">
+        <span class="chip chip-pu">Technical Reporting</span>
+        <span class="chip chip-pu">Data Analysis</span>
+        <span class="chip chip-pu">Design Optimisation</span>
+        <span class="chip chip-pu">Validation &amp; Verification</span>
+        <span class="chip chip-pu">Trade-off Analysis</span>
+        <span class="chip chip-pu">Literature Review</span>
+      </div>
+    </div>
+
+    <div class="card">
+      <h3>Key Project Numbers</h3>
+      <div style="margin-top:6px">
+        <div class="inline-stat">AR 6.3 → 10 (+58.7%)</div>
+        <div class="inline-stat">L/D 16.99 → 21.66</div>
+        <div class="inline-stat">b = 3180 mm</div>
+        <div class="inline-stat">c = 317 mm</div>
+        <div class="inline-stat">Re = 8.6 × 10⁵</div>
+        <div class="inline-stat">5 CFD configurations</div>
+        <div class="inline-stat">17 ribs over b/2</div>
+        <div class="inline-stat">3.5 G load limit</div>
+      </div>
+    </div>
+
+    <div class="acc" style="margin-top:4px">
+      <div class="acc-h" onclick="tog(this)">
+        <span>References</span>
+        <span class="ico">▾</span>
+      </div>
+      <div class="acc-b">
+        <ul class="refs">
+          <li><span class="ref-n">[1]</span>J. G. Leishman, <em>Introduction to Aerospace Flight Vehicles</em>, Embry-Riddle Aeronautical University, 2026.</li>
+          <li><span class="ref-n">[2]</span>J. D. Anderson, <em>Fundamentals of Aerodynamics</em>, 6th ed. McGraw-Hill, 2017.</li>
+          <li><span class="ref-n">[5]</span>IMechE, <em>UAS Challenge 2026 Rules &amp; Scoring</em>, 2026.</li>
+          <li><span class="ref-n">[6]</span>R. T. Whitcomb, NASA TN D-8260, 1976.</li>
+          <li><span class="ref-n">[7]</span>X. Ma &amp; M. Elham, <em>Aerospace Science and Technology</em>, 2023.</li>
+          <li><span class="ref-n">[8]</span>T. H. G. Megson, <em>Aircraft Structures for Engineering Students</em>, 5th ed., 2013.</li>
+          <li><span class="ref-n">[9]</span>ANSYS Inc., <em>Using the Adjoint Solver</em>, Release 2022 R2, 2022.</li>
+          <li><span class="ref-n">[11]</span>I. Kroo, VKI Lecture Series, 2005.</li>
+        </ul>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ABOUT -->
+<div id="panel-about" class="panel">
+  <div class="wrap">
+    <div class="sec-label">About</div>
+    <h2 class="sec-title">Nicolas Gali</h2>
+    <div class="divider"></div>
+
+    <div class="card" style="margin-bottom:14px">
+      <h3>Degree &amp; Institution</h3>
+      <p style="font-size:0.88rem;color:var(--muted);line-height:1.7">
+        MEng Mechanical &amp; Aerospace Engineering<br>
+        <strong style="color:var(--navy)">Brunel University of London</strong><br>
+        Department of Mechanical and Aerospace Engineering<br>
+        Dissertation submitted 2026
+      </p>
+    </div>
+
+    <div class="card" style="margin-bottom:14px">
+      <h3>This Project</h3>
+      <p style="font-size:0.88rem;color:var(--muted);line-height:1.7">
+        A computational aerodynamic and structural study combining CFD-driven aspect ratio optimisation,
+        adjoint-based aerofoil shape optimisation, and modular winglet design. Conducted as an independent
+        final-year dissertation under the supervision of Dr O. Adetoro.
+      </p>
+    </div>
+
+    <a href="https://www.linkedin.com/in/" class="cta-btn">Connect on LinkedIn</a>
+    <a href="index.html" class="cta-btn outline">View Full Academic Page</a>
+
+    <div class="acc" style="margin-top:14px">
+      <div class="acc-h" onclick="tog(this)">
+        <span>Acknowledgements</span>
+        <span class="ico">▾</span>
+      </div>
+      <div class="acc-b">
+        <p style="font-size:0.88rem;color:var(--muted);line-height:1.7">
+          Sincere thanks to <strong style="color:var(--navy)">Dr O. Adetoro</strong> for supervision, guidance and support throughout this project,
+          and to <strong style="color:var(--navy)">Dr G. Alfano</strong> (Module Tutor) and the Department of Mechanical and Aerospace Engineering
+          at Brunel University of London.
+        </p>
+      </div>
+    </div>
+
+    <div class="acc">
+      <div class="acc-h" onclick="tog(this)">
+        <span>Academic Disclaimer &amp; AI Note</span>
+        <span class="ico">▾</span>
+      </div>
+      <div class="acc-b">
+        <p style="font-size:0.82rem;color:var(--muted);line-height:1.7;margin-bottom:10px">
+          This page presents the findings of an individual academic project submitted to Brunel University of London.
+          All simulations, analysis and conclusions are the author's own independent work.
+          Third-party sources cited in accordance with IEEE referencing standards.
+        </p>
+        <p style="font-size:0.82rem;color:var(--muted);line-height:1.7">
+          <strong style="color:var(--navy)">AI use:</strong> Claude (Anthropic) was used to assist with the layout and formatting of this web page only.
+          All engineering analysis, CFD simulations, and technical conclusions were conducted independently by the author.
+        </p>
+      </div>
+    </div>
+
+  </div>
+  <div class="foot">
+    <p>© 2026 Nicolas Gali · Brunel University of London</p>
+    <p class="foot-copy">Department of Mechanical and Aerospace Engineering</p>
+  </div>
+</div>
+
+<script>
+function showTab(name, btn) {
+  document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  document.getElementById('panel-' + name).classList.add('active');
+  btn.classList.add('active');
+  window.scrollTo({top: 0, behavior: 'smooth'});
+}
+function tog(h) {
+  const b = h.nextElementSibling, i = h.querySelector('.ico');
+  const open = b.classList.contains('open');
+  b.classList.toggle('open', !open);
+  if(i) i.classList.toggle('open', !open);
+}
+</script>
+</body>
+</html>
